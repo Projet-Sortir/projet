@@ -7,6 +7,10 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
+#            remember_me:
+#                secret: '%kernel.secret%'
+#                lifetime: 604800 #second
+
             anonymous: lazy
             provider: users_in_memory
 
