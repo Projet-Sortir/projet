@@ -2,11 +2,23 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        <title>{% block title %}{% endblock %} - Sortir</title>
+        {{ encore_entry_link_tags('app') }}
     </head>
     <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+        <header></header>
+        <nav>
+            <ul>
+                <li><a href="">Villes</a></li>
+                <li><a href="">Sites</a></li>
+                <li><a href="">Accueil</a></li>
+                <li><a href="">Mon profil</a></li>
+                <li><a href="">Se déconnecter</a></li>
+            </ul>
+        </nav>
+        <main>
+            {% block main %}{% endblock %}
+        </main>
+        <footer></footer>
     </body>
 </html>
