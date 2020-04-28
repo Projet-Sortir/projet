@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}{% endblock %} - Sortir</title>
         {{ encore_entry_link_tags('app') }}
     </head>
     <body>
-        <header></header>
+        <header><img src="{{ asset('img/logo.jpg') }}" alt="logo_Sortir.com"></header>
         <nav>
             <ul>
                 <li><a href="">Villes</a></li>
@@ -17,6 +17,8 @@
             </ul>
         </nav>
         <main>
+            <p>Date du jour : {{ "now"|date("d/m/Y") }}</p><br/>
+            <p>Participant : {% if is_granted('IS_AUTHENTICATED_REMEMBERED') or is_granted('IS_AUTHENTICATED_FULLY')%} {{ app.user.nom }} {% endif %}</p>
             {% block main %}{% endblock %}
         </main>
         <footer></footer>

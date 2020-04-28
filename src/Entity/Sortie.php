@@ -49,27 +49,27 @@ class Sortie
     private $infosSortie;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Site", inversedBy="sorties")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Site")
      */
     private $site;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Participant", inversedBy="organisateurSorties")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Participant")
      */
     private $organisateur;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Lieu", inversedBy="sorties")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Lieu")
      */
     private $lieu;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Etat", inversedBy="sorties")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Etat")
      */
     private $etat;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Participant", inversedBy="participantSorties")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Participant")
      */
     private $inscrits;
 

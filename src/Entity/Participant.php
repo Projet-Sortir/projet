@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -54,25 +53,9 @@ class Participant implements UserInterface
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Sortie", mappedBy="organisateur")
-     */
-    private $organisateurSorties;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Sortie", mappedBy="inscrits")
-     */
-    private $participantSorties;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Site", inversedBy="participants")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Site")
      */
     private $site;
-
-    public function __construct()
-    {
-        $this->participantSorties = new ArrayCollection();
-        $this->organisateurSorties = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -165,38 +148,6 @@ class Participant implements UserInterface
     }
 
     public function eraseCredentials(){}
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getOrganisateurSorties(): ArrayCollection
-    {
-        return $this->organisateurSorties;
-    }
-
-    /**
-     * @param ArrayCollection $organisateurSorties
-     */
-    public function setOrganisateurSorties(ArrayCollection $organisateurSorties): void
-    {
-        $this->organisateurSorties = $organisateurSorties;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getParticipantSorties(): ArrayCollection
-    {
-        return $this->participantSorties;
-    }
-
-    /**
-     * @param ArrayCollection $participantSorties
-     */
-    public function setParticipantSorties(ArrayCollection $participantSorties): void
-    {
-        $this->participantSorties = $participantSorties;
-    }
 
     /**
      * @return mixed

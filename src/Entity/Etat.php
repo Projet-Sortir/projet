@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,16 +21,6 @@ class Etat
      */
     private $libelle;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Sortie", mappedBy="etat")
-     */
-    private $sorties;
-
-    public function __construct()
-    {
-        $this->sorties = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -48,21 +37,4 @@ class Etat
 
         return $this;
     }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getSorties(): ArrayCollection
-    {
-        return $this->sorties;
-    }
-
-    /**
-     * @param ArrayCollection $sorties
-     */
-    public function setSorties(ArrayCollection $sorties): void
-    {
-        $this->sorties = $sorties;
-    }
-
 }
