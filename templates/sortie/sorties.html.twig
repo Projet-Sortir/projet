@@ -1,0 +1,64 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}
+Sorties
+{% endblock %}
+
+{% block main %}
+    <form method="get">
+        <label for="site">Site : </label>
+        <select id="site" name="site">
+            <option value="">Site</option>
+            {% for site in sites %}
+                <option value="{{ site.nom }}">{{ site.nom }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="recherche">Le nom de la sortie contient : </label>
+        <input id="recherche" name="recherche" type="text"/><br/>
+        <label for="debut">Entre : </label>
+        <input id="debut" name="debut" type="date">
+        <label for="fin"> et :</label>
+        <input id="fin" name="fin" type="date"><br/>
+
+        <input type="checkbox" id="organisateur" name="organisateur" value="organisateur">
+        <label for="organisateur">Sorties dont je suis l'organisateur/trice</label><br/>
+        <input type="checkbox" id="inscrit" name="inscrit" value="inscrit">
+        <label for="inscrit">Sorties auxquelles je suis inscrit/e</label><br/>
+        <input type="checkbox" id="non_inscrit" name="non_inscrit" value="non_inscrit">
+        <label for="non_inscrit">Sorties auxquelles je ne suis pas inscrit/e</label><br/>
+        <input type="checkbox" id="passes" name="passes" value="passes">
+        <label for="passes">Sorties passées</label><br/>
+
+        <button type="submit">Rechercher</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nom de la sortie</th>
+                <th>Date de la sortie</th>
+                <th>Clôture</th>
+                <th>inscrits/places</th>
+                <th>Etat</th>
+                <th>Inscrit</th>
+                <th>Organisateur</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sortie in sorties %}
+                <tr>
+                    <td>{{ sortie.nom }}</td>
+                    <td>{{ sortie.dateHeureDebut|date("d/m/Y H:i") }}</td>
+                    <td>{{ sortie.dateLimiteInscription|date("d/m/Y") }}</td>
+                    <td>TODO / {{ sortie.nbInscriptionsMax }}</td>
+                    <td>{{ sortie.etat }}</td>
+                    <td>TODO</td>
+                    <td>TODO</td>
+                    <td>TODO</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
