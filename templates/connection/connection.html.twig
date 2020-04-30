@@ -1,0 +1,35 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %} Connexion {% endblock %}
+
+ {% block main %}
+<h1>Sortir.com</h1>
+
+{% if error %}
+     <div>
+         {{ error.messageKey|trans(error.messageData, 'security') }}
+     </div>
+{% endif %}
+
+<p>
+    <label> Mail : </label>
+    <input type="text" name="_username">
+</p>
+
+<p>
+    <label for="motdepasse">Mot de passe : </label>
+    <input type="password" id="motdepasse" name="_password">
+</p>
+
+<div>
+    <input type="submit" name="envoyer" value="Envoyer">
+</div>
+
+<p>
+    <input type="checkbox" name="remember" value="remember"> Se souvenir de moi
+</p>
+
+<p>
+    <a href="">Mot de passe oublié</a>
+</p>
+ {% endblock %}
