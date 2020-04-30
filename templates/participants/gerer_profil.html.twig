@@ -1,0 +1,13 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}
+    Gerer mon profil
+{% endblock %}
+
+{% block main %}
+    {{ form_start(profilForm) }}
+    {{ form_widget(profilForm) }}
+    <button type="submit">Enregistrer</button>
+    <button type="reset">Annuler</button>
+    {{ form_end(profilForm) }}
+{% endblock %}
