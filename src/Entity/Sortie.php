@@ -188,7 +188,7 @@ class Sortie
     }
 
     /**
-     * @return mixed
+     * @return Site
      */
     public function getSite()
     {
@@ -204,7 +204,7 @@ class Sortie
     }
 
     /**
-     * @return mixed
+     * @return Lieu
      */
     public function getLieu()
     {
@@ -220,7 +220,7 @@ class Sortie
     }
 
     /**
-     * @return mixed
+     * @return Etat
      */
     public function getEtat()
     {

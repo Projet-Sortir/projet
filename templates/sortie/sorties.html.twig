@@ -53,7 +53,7 @@ Sorties
                     <td>{{ sortie.dateHeureDebut|date("d/m/Y H:i") }}</td>
                     <td>{{ sortie.dateLimiteInscription|date("d/m/Y") }}</td>
                     <td>TODO / {{ sortie.nbInscriptionsMax }}</td>
-                    <td>{{ sortie.etat }}</td>
+                    <td>{% if sortie.etat %}{{ sortie.etat.libelle }}{% else %}'non renseigné'{% endif %}</td>
                     <td>TODO</td>
                     <td>TODO</td>
                     <td>TODO</td>

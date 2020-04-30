@@ -16,6 +16,15 @@
                 <li><a href="">Se déconnecter</a></li>
             </ul>
         </nav>
+        <div class="flash">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="flash-{{ label }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
         <main>
             <p>Date du jour : {{ "now"|date("d/m/Y") }}</p><br/>
             <p>Participant : {% if is_granted('IS_AUTHENTICATED_REMEMBERED') or is_granted('IS_AUTHENTICATED_FULLY')%} {{ app.user.nom }} {% endif %}</p>

@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Etat;
 use App\Entity\Site;
 use App\Entity\Sortie;
 use App\Form\SortieType;
+use Doctrine\DBAL\Exception\ConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,23 +54,36 @@ class SortieController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $em
      * @return Response
+     * @throws ConstraintViolationException
      */
     public function ajouterSortie(Request $request, EntityManagerInterface $em)
     {
         $sortie = new Sortie();
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
+        $error = '';
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
-            //TODO : user
-            //$sortie->setOrganisateur($this->getUser());
-            $sortie->setEtat();
-            //$sortie->setSite($this->getUser()->getSite());
 
-            $em->persist($sortie);
-            $em->flush();
+            if ($sortie->getDateLimiteInscription() > $sortie->getDateHeureDebut()) {
+                $error = 'La date de cloture doit etre antérieur a la date de la sortie';
+            } else {
+                //TODO : user
+                //$sortie->setOrganisateur($this->getUser());
+                //$sortie->setSite($this->getUser()->getSite());
+
+                $etat = $this->getDoctrine()->getRepository(Etat::class)->find(1);
+                $sortie->setEtat($etat);
+
+                $em->persist($sortie);
+                $em->flush();
+
+                $this->addFlash('success', 'Sortie Publiée !');
+
+                return $this->redirectToRoute('accueil');
+            }
         }
 
-        return $this->render('sortie/ajouter_sortie.html.twig', ['sortieForm' => $sortieForm->createView()]);
+        return $this->render('sortie/ajouter_sortie.html.twig', ['sortieForm' => $sortieForm->createView(), 'error' => $error]);
     }
 }
