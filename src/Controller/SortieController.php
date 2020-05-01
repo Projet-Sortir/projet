@@ -24,7 +24,7 @@ class SortieController extends AbstractController
     {
         //TODO :
         //$id = $this->getUser()->getId();
-        $id = 2;
+        $id = 1;
 
         $siteRepo = $this->getDoctrine()->getRepository(Site::class);
         $sites = $siteRepo->findAll();
@@ -54,7 +54,6 @@ class SortieController extends AbstractController
      * @param Request $request
      * @param EntityManagerInterface $em
      * @return Response
-     * @throws ConstraintViolationException
      */
     public function ajouterSortie(Request $request, EntityManagerInterface $em)
     {
@@ -72,13 +71,18 @@ class SortieController extends AbstractController
                 //$sortie->setOrganisateur($this->getUser());
                 //$sortie->setSite($this->getUser()->getSite());
 
-                $etat = $this->getDoctrine()->getRepository(Etat::class)->find(1);
-                $sortie->setEtat($etat);
+                $etatRepo = $this->getDoctrine()->getRepository(Etat::class);
+
+                if ($request->get('action') == 'publier') {
+                    $sortie->setEtat($etatRepo->find(2));
+                    $this->addFlash('success', 'Sortie Publiée !');
+                } else {
+                    $sortie->setEtat($etatRepo->find(1));
+                    $this->addFlash('success', 'Sortie Enregistrée !');
+                }
 
                 $em->persist($sortie);
                 $em->flush();
-
-                $this->addFlash('success', 'Sortie Publiée !');
 
                 return $this->redirectToRoute('accueil');
             }

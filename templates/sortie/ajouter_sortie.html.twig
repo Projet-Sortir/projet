@@ -8,8 +8,8 @@
     {{ form_start(sortieForm) }}
     {% if error !='' %}<p class="error">{{ error }}</p>{% endif %}
     {{ form_widget(sortieForm) }}
-    <button type="button">Enregistrer</button>
-    <button type="submit">Publier la sortie</button>
+    <button type="submit">Enregistrer</button>
+    <button type="submit" name="action" value="publier">Publier la sortie</button>
     <button type="reset">Annuler</button>
     {{ form_end(sortieForm) }}
 {% endblock %}

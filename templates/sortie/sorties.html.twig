@@ -55,8 +55,23 @@ Sorties
                     <td>TODO / {{ sortie.nbInscriptionsMax }}</td>
                     <td>{% if sortie.etat %}{{ sortie.etat.libelle }}{% else %}'non renseigné'{% endif %}</td>
                     <td>TODO</td>
-                    <td>TODO</td>
-                    <td>TODO</td>
+                    <td>{{ sortie.organisateur.pseudo }}</td>
+                    <td>
+                        {% if sortie.etat.id != 1 %}<a href="{#TODO#}">Afficher</a>{% endif %}
+
+                        {#TODO : ajouter 'etre inscrit' dans le if#}
+                        {% if sortie.etat.id != 4 and sortie.etat.id != 5 %}<a href="{#TODO#}">Se désister</a>{% endif %}
+
+                        {#TODO : ajouter 'ne pas etre inscrit' dans le if#}
+                        {% if sortie.etat.id == 2 %}<a href="{#TODO#}">S'inscrire</a>{% endif %}
+                        {% if sortie.etat.id == 1 %}
+                            <a href="{#TODO#}">Modifier</a>
+                            <a href="{#TODO#}">Publier</a>
+                        {% endif %}
+
+                        {#TODO : remplacer id user par 'app.user.id'#}
+                        {% if sortie.organisateur.id == 1 and (sortie.etat.id == 2 or sortie.etat.id == 3) %}{% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

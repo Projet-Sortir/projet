@@ -31,7 +31,9 @@ class SortieRepository extends ServiceEntityRepository
             ->setMaxResults(1);
         $idSite = $qbSite->getQuery()->getResult();
 
-        $qbSortie = $this->createQueryBuilder('s')
+        $qbSortie = $this->createQueryBuilder('s');
+        $qbSortie->where($qbSortie->expr()->orX('s.etat != 1', 's.organisateur = :id'))
+            ->setParameter('id', $id)
             ->setMaxResults(20)
             ->orderBy('s.dateHeureDebut', 'ASC')
             ->leftjoin('s.inscrits', 'i');
