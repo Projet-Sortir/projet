@@ -5,6 +5,9 @@
 {% endblock %}
 
 {% block main %}
+    {% if updateResult %}
+        <p class="error">{{ updateResult }}</p>
+    {% endif %}
     {{ form_start(profilForm) }}
     {{ form_widget(profilForm) }}
     <button type="submit">Enregistrer</button>
