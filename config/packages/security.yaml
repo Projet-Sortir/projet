@@ -18,12 +18,16 @@ security:
             pattern: ^/
             anonymous: ~
             provider: my_users
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 2629800 # 1 month in seconds
             form_login:
-                login_path: login
-                check_path: login
+                login_path: app_login
+                check_path: app_login
+                default_target_path: accueil
 
             logout:
-                path: logout
+                path: app_logout
                 target: accueil
             guard:
                 authenticators:

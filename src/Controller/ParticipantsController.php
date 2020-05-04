@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ParticipantsController extends AbstractController
 {
@@ -21,9 +20,7 @@ class ParticipantsController extends AbstractController
      */
     public function gererProfil(Request $request, UserPasswordEncoderInterface $encoder)
     {
-        //TODO : use user in session
-        // $user = $this->getUser();
-        $user = $this->getDoctrine()->getRepository(Participant::class)->find(1);
+        $user = $this->getUser();
 
         $checkPseudoUnique = false;
         $changePwd = false;
@@ -56,6 +53,11 @@ class ParticipantsController extends AbstractController
             }
 
             $update = $participantRepo->updateProfil($participant, $checkPseudoUnique, $changePwd, $user->getId());
+        }
+
+        if ($checkPseudoUnique || $changePwd) {
+            $this->addFlash('warning', 'Pseudo ou mot de passe modifié, veuillez vous reconnecter');
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('participants/gerer_profil.html.twig', [

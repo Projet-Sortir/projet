@@ -21,9 +21,7 @@ class SortieController extends AbstractController
      */
     public function sorties(Request $request)
     {
-        //TODO :
-        //$id = $this->getUser()->getId();
-        $id = 1;
+        $id = $this->getUser()->getId();
 
         switch ($request->query->get('action')) {
             case 'inscrire':
@@ -39,10 +37,6 @@ class SortieController extends AbstractController
                 annuler();
                 break;
             default:break;
-        }
-
-        if ($request->query->get('action') == "inscrire") {
-            inscrire();
         }
 
         $siteRepo = $this->getDoctrine()->getRepository(Site::class);
@@ -102,9 +96,8 @@ class SortieController extends AbstractController
             if ($sortie->getDateLimiteInscription() > $sortie->getDateHeureDebut()) {
                 $error = 'La date de cloture doit etre antérieur a la date de la sortie';
             } else {
-                //TODO : user
-                //$sortie->setOrganisateur($this->getUser());
-                //$sortie->setSite($this->getUser()->getSite());
+                $sortie->setOrganisateur($this->getUser());
+                $sortie->setSite($this->getUser()->getSite());
 
                 $etatRepo = $this->getDoctrine()->getRepository(Etat::class);
 
