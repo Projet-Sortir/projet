@@ -1,0 +1,10 @@
+{% extends 'layout.html.twig' %}
+{% block title %}
+    S'inscrire
+{% endblock %}
+{% block main %}
+    {{ form_start(registerForm) }}
+    {{ form_widget(registerForm) }}
+    <button type="submit">S'inscrire</button>
+    {{ form_end(registerForm) }}
+{% endblock %}

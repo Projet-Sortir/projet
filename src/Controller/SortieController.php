@@ -6,7 +6,6 @@ use App\Entity\Etat;
 use App\Entity\Site;
 use App\Entity\Sortie;
 use App\Form\SortieType;
-use Doctrine\DBAL\Exception\ConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,6 +24,26 @@ class SortieController extends AbstractController
         //TODO :
         //$id = $this->getUser()->getId();
         $id = 1;
+
+        switch ($request->query->get('action')) {
+            case 'inscrire':
+                inscrire();
+                break;
+            case 'desister':
+                desister();
+                break;
+            case 'publier':
+                publier();
+                break;
+            case 'annuler':
+                annuler();
+                break;
+            default:break;
+        }
+
+        if ($request->query->get('action') == "inscrire") {
+            inscrire();
+        }
 
         $siteRepo = $this->getDoctrine()->getRepository(Site::class);
         $sites = $siteRepo->findAll();
@@ -47,6 +66,22 @@ class SortieController extends AbstractController
             'sites'=>$sites,
             'sorties'=>$sorties
         ]);
+
+        function inscrire() {
+
+        }
+
+        function desister() {
+
+        }
+
+        function publier() {
+
+        }
+
+        function annuler() {
+
+        }
     }
 
     /**

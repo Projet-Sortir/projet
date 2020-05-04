@@ -134,7 +134,8 @@ class Participant implements UserInterface
 
     public function getRoles()
     {
-        // TODO: Implement getRoles() method.
+        //TODO : a modifier lors de la partie s'inscrire
+        return ["ROLE_USER"];
     }
 
     public function getSalt()
