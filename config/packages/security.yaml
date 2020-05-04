@@ -8,7 +8,7 @@ security:
         my_users:
             entity:
                 class: App\Entity\Participant
-                property: username
+                property: pseudo
 
     firewalls:
         dev:
