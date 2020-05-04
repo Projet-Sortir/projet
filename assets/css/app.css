@@ -5,3 +5,11 @@ body {
     background-color: #C82829;
     color: #FFFFFF;
 }
+.flash-warning {
+    background-color: darkorange;
+    color: #FFFFFF;
+}
+.flash-success {
+    background-color: darkgreen;
+    color: #FFFFFF;
+}
