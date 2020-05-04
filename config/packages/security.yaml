@@ -1,7 +1,11 @@
 security:
+    encoders:
+        App\Entity\User:
+            algorithm: bcrypt
+
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        our_db_provider:
+        my_users:
             entity:
                 class: App\Entity\User
                 property: username
@@ -13,7 +17,7 @@ security:
         main:
             pattern: ^/
             anonymous: ~
-            provider: our_db_provider
+            provider: my_users
             form_login:
                 login_path: login
                 check_path: login
@@ -21,6 +25,9 @@ security:
             logout:
                 path: logout
                 target: accueil
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
 
 
 
@@ -35,3 +42,4 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        - {path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }

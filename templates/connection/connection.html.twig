@@ -10,15 +10,15 @@
          {{ error.messageKey|trans(error.messageData, 'security') }}
      </div>
 {% endif %}
-
+<form method="post">
 <p>
     <label> Mail : </label>
-    <input type="text" name="_username">
+    <input type="text" name="username">
 </p>
 
 <p>
     <label for="motdepasse">Mot de passe : </label>
-    <input type="password" id="motdepasse" name="_password">
+    <input type="password" id="password" name="password">
 </p>
 
 <div>
@@ -32,4 +32,5 @@
 <p>
     <a href="">Mot de passe oublié</a>
 </p>
+</form>
  {% endblock %}
