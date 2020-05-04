@@ -9,11 +9,17 @@
         <header><img src="{{ asset('img/logo.jpg') }}" alt="logo_Sortir.com"></header>
         <nav>
             <ul>
+                {% if is_granted('ROLE_ADMIN') %}
                 <li><a href="">Villes</a></li>
                 <li><a href="">Sites</a></li>
-                <li><a href="">Accueil</a></li>
-                <li><a href="">Mon profil</a></li>
-                <li><a href="">Se déconnecter</a></li>
+                {% endif %}
+                <li><a href="{{ path('accueil') }}">Accueil</a></li>
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                <li><a href="{{ path('gerer_profil') }}">Mon profil</a></li>
+                <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
+                {% else %}
+                <li><a href="{{ path('app_login') }}">Se connecter</a></li>
+                {% endif %}
             </ul>
         </nav>
         <div class="flash">
@@ -27,7 +33,7 @@
         </div>
         <main>
             <p>Date du jour : {{ "now"|date("d/m/Y") }}</p><br/>
-            <p>Participant : {% if is_granted('IS_AUTHENTICATED_REMEMBERED') or is_granted('IS_AUTHENTICATED_FULLY')%} {{ app.user.nom }} {% endif %}</p>
+            <p>Participant : {% if is_granted('IS_AUTHENTICATED_REMEMBERED') or is_granted('IS_AUTHENTICATED_FULLY')%} {{ app.user.pseudo }} {% endif %}</p>
             {% block main %}{% endblock %}
         </main>
         <footer></footer>
