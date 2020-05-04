@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -172,17 +173,17 @@ class Sortie
     }
 
     /**
-     * @return ArrayCollection
+     * @return Collection
      */
-    public function getInscrits(): ArrayCollection
+    public function getInscrits(): Collection
     {
         return $this->inscrits;
     }
 
     /**
-     * @param ArrayCollection $inscrits
+     * @param Collection $inscrits
      */
-    public function setInscrits(ArrayCollection $inscrits): void
+    public function setInscrits(Collection $inscrits): void
     {
         $this->inscrits = $inscrits;
     }

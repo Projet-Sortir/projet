@@ -17,25 +17,43 @@ class SortieController extends AbstractController
     /**
      * @Route("/sorties", name="sorties")
      * @param Request $request
+     * @param EntityManagerInterface $em
      * @return Response
      */
-    public function sorties(Request $request)
+    public function sorties(Request $request, EntityManagerInterface $em)
     {
         $id = $this->getUser()->getId();
+        $idSortie=$request->query->get( 'id');
 
-        switch ($request->query->get('action')) {
+        switch ($request->get('action')) {
             case 'inscrire':
-                inscrire();
-                break;
+                //récuperer la sortie via son id
+                $sortie = $em->getRepository('App:Sortie')->find($idSortie);
+                //récuperer le participant via son id
+                $participant = $em->getRepository('App:Participant')->find($id);
+                //récuperer le tableau des inscrits à la sortie
+                $inscrits = $sortie->getInscrits();
+                //si le tableau d'inscrit contient le participant, ne rien faire et envoyer un message flash warning
+                if ($inscrits->contains($participant)){
+                    $this->addFlash('warning', 'Vous etes déjà inscrit pour cette sortie');
+                    break;
+
+                //sinon ajouter le participant au tableau, mettre le nouveau tableau dans la sortie, flush, envoyer un message flash success
+                } else {
+                    $inscrits->add($participant);
+                    $sortie->setInscrits($inscrits);
+                    $em->flush();
+                    $this->addFlash('success', 'Inscription réussi !');
+                    break;
+                }
             case 'desister':
-                $idSortie=$request->query->get( 'id');
                 $this->getDoctrine()->getRepository(Sortie::class)->deleteParticipant($idSortie, $id);
                 break;
             case 'publier':
-                publier();
+                //TODO : publier une sortie
                 break;
             case 'annuler':
-                annuler();
+                //TODO : annuler une sortie
                 break;
             default:break;
         }
@@ -61,18 +79,6 @@ class SortieController extends AbstractController
             'sites'=>$sites,
             'sorties'=>$sorties
         ]);
-
-        function inscrire() {
-
-        }
-
-        function publier() {
-
-        }
-
-        function annuler() {
-
-        }
     }
 
     /**
