@@ -104,4 +104,9 @@ class SortieRepository extends ServiceEntityRepository
         $query = $qbSortie->getQuery();
         return $query->execute();
     }
+
+    public function deleteParticipant($idSortie, $id)
+    {
+        
+    }
 }

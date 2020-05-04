@@ -30,7 +30,8 @@ class SortieController extends AbstractController
                 inscrire();
                 break;
             case 'desister':
-                desister();
+                $idSortie=$request->query->get( 'id');
+                $this->getDoctrine()->getRepository(Sortie::class)->deleteParticipant($idSortie, $id);
                 break;
             case 'publier':
                 publier();
@@ -68,10 +69,6 @@ class SortieController extends AbstractController
         ]);
 
         function inscrire() {
-
-        }
-
-        function desister() {
 
         }
 
