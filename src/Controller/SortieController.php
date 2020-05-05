@@ -47,7 +47,35 @@ class SortieController extends AbstractController
                     break;
                 }
             case 'desister':
-                $this->getDoctrine()->getRepository(Sortie::class)->deleteParticipant($idSortie, $id);
+                //TODO : Annuler la présence d'un participant à une sortie
+                //$this->getDoctrine()->getRepository(Sortie::class)->deleteParticipant($idSortie, $id);
+
+                // Récupérer la sortie par son id
+                $sortie = $em->getRepository('App:Sortie')->find($idSortie);
+
+                //Récupérer le participant/utilisateur par son id
+                $participant = $em->getRepository('App:Participant')->find($id);
+
+                //Récupérer le tableau des inscrits à la sortie
+                $inscrits = $sortie->getInscrits();
+
+                // Si le tableau d'inscrit contient le participant, lancer la fonction de suppression du participant, mettre le nouveau tableau dans la sortie,
+                // flush,  envoyer un message flash success
+
+                if ($inscrits->contains($participant))
+                {
+                 $inscrits->del($participant);
+                 $sortie->setInscrits($inscrits);
+                 $em->flush();
+                 $this->addFlash('success', 'Vous êtes retiré de la sortie');
+                 break;
+
+                 //Sinon ne rien faire et envoyer un message flash warning
+
+                } else
+                    {
+                    $this->addFlash('warning', 'Vous devez être inscrit sur cette sortie pour pour pouvoir en sortir!');
+                    }
                 break;
             case 'publier':
                 //TODO : publier une sortie

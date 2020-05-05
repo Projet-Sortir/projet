@@ -104,5 +104,5 @@ class SortieRepository extends ServiceEntityRepository
         $query = $qbSortie->getQuery();
         return $query->execute();
     }
-    
+
 }
