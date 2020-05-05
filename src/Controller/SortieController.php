@@ -66,9 +66,14 @@ class SortieController extends AbstractController
                 // Si le tableau d'inscrit contient le participant, lancer la fonction de suppression du participant, mettre le nouveau tableau dans la sortie,
                 // flush,  envoyer un message flash success
 
+                if ($sortie->getEtat()->getId()!=2 && $sortie->getEtat()->getId()!=3) {
+                    $this->addFlash('warning', 'La sortie n\'est pas ouverte, vous ne pouvez pas vous désinscrire');
+                    break;
+                }
+
                 if ($inscrits->contains($participant))
                 {
-                 $inscrits->del($participant);
+                 $inscrits->removeElement($participant);
                  $sortie->setInscrits($inscrits);
                  $em->flush();
                  $this->addFlash('success', 'Vous êtes retiré de la sortie');
