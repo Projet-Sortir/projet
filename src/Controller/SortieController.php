@@ -34,7 +34,11 @@ class SortieController extends AbstractController
                 //récuperer le tableau des inscrits à la sortie
                 $inscrits = $sortie->getInscrits();
                 //si le tableau d'inscrit contient le participant, ne rien faire et envoyer un message flash warning
-                if ($inscrits->contains($participant)){
+                if ($sortie->getEtat()->getId()!=2) {
+                    $this->addFlash('warning', 'La sortie n\'est pas ouverte, vous ne pouvez pas vous inscrire');
+                    break;
+                }
+                else if ($inscrits->contains($participant)) {
                     $this->addFlash('warning', 'Vous etes déjà inscrit pour cette sortie');
                     break;
 
@@ -102,10 +106,20 @@ class SortieController extends AbstractController
 
         $sortieRepo = $this->getDoctrine()->getRepository(Sortie::class);
         $sorties = $sortieRepo->lister($filtres, $id);
+        $isInscrit = [];
+
+        foreach ($sorties as $value) {
+            if ($value->getInscrits()->contains($this->getUser())) {
+                $isInscrit[$value->getId()] = true;
+            } else {
+                $isInscrit[$value->getId()] = false;
+            }
+        }
 
         return $this->render('sortie/sorties.html.twig', [
             'sites'=>$sites,
-            'sorties'=>$sorties
+            'sorties'=>$sorties,
+            'isInscrit'=>$isInscrit
         ]);
     }
 
