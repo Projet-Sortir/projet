@@ -51,7 +51,6 @@ class SortieController extends AbstractController
                     break;
                 }
             case 'desister':
-                //TODO : Annuler la présence d'un participant à une sortie
                 //$this->getDoctrine()->getRepository(Sortie::class)->deleteParticipant($idSortie, $id);
 
                 // Récupérer la sortie par son id
@@ -86,11 +85,20 @@ class SortieController extends AbstractController
                     $this->addFlash('warning', 'Vous devez être inscrit sur cette sortie pour pour pouvoir en sortir!');
                     }
                 break;
+
             case 'publier':
-                //TODO : publier une sortie
-                break;
-            case 'annuler':
-                //TODO : annuler une sortie
+                $publie = $em->getRepository('App:Etat')->find(2);
+                $sortie = $em->getRepository('App:Sortie')->find($idSortie);
+                if ($sortie->getEtat()->getId()!=1 || $sortie->getOrganisateur()!=$this->getUser()) {
+                    $this->addFlash('warning', 'Vous ne pouvez pas publier cette sortie');
+                } else if ($sortie->getDateLimiteInscription() > $sortie->getDateHeureDebut() || new \DateTime()> $sortie->getDateLimiteInscription()) {
+                    $this->addFlash('warning', 'Les dates sont invalides');
+                    //TODO : redirect to modifier sortie
+                } else {
+                    $sortie->setEtat($publie);
+                    $em->flush();
+                    $this->addFlash('success', 'Sortie publiée !');
+                }
                 break;
             default:break;
         }

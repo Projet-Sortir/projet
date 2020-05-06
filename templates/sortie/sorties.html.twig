@@ -62,7 +62,7 @@ Sorties
                         {% if sortie.etat.id == 2 and not isInscrit[sortie.id] %}<a href="?action=inscrire&id={{ sortie.id }}">S'inscrire</a>{% endif %}
                         {% if sortie.etat.id == 1 %}
                             <a href="{#TODO#}">Modifier</a>
-                            <a href="{#TODO#}">Publier</a>
+                            <a href="?action=publier&id={{ sortie.id }}">Publier</a>
                         {% endif %}
                         {% if sortie.organisateur.id == app.user.id and (sortie.etat.id == 2 or sortie.etat.id == 3) %} <a href="#?action=annuler">Annuler</a> {% endif %}
                     </td>

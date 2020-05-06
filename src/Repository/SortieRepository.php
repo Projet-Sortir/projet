@@ -33,6 +33,7 @@ class SortieRepository extends ServiceEntityRepository
 
         $qbSortie = $this->createQueryBuilder('s');
         $qbSortie->where($qbSortie->expr()->orX('s.etat != 1', 's.organisateur = :id'))
+            ->andWhere('s.etat!=7')
             ->setParameter('id', $id)
             ->setMaxResults(20)
             ->orderBy('s.dateHeureDebut', 'ASC')
