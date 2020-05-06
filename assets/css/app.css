@@ -1,7 +1,7 @@
 body {
     background-color: lightgray;
 }
-.error {
+.flash-error {
     background-color: #C82829;
     color: #FFFFFF;
 }

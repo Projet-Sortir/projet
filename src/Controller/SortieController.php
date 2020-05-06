@@ -149,13 +149,16 @@ class SortieController extends AbstractController
     {
         $sortie = new Sortie();
         $sortieForm = $this->createForm(SortieType::class, $sortie);
+
+        $sortieForm->get('dateHeureDebut')->setData(new DateTime());
+        $sortieForm->get('dateLimiteInscription')->setData(new DateTime());
+
         $sortieForm->handleRequest($request);
-        $error = '';
 
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
 
             if ($sortie->getDateLimiteInscription() > $sortie->getDateHeureDebut()) {
-                $error = 'La date de cloture doit etre antérieur a la date de la sortie';
+                $this->addFlash('error','La date de cloture doit etre antérieur a la date de la sortie');
             } else {
                 $sortie->setOrganisateur($this->getUser());
                 $sortie->setSite($this->getUser()->getSite());
@@ -177,7 +180,7 @@ class SortieController extends AbstractController
             }
         }
 
-        return $this->render('sortie/ajouter_sortie.html.twig', ['sortieForm' => $sortieForm->createView(), 'error' => $error]);
+        return $this->render('sortie/ajouter_sortie.html.twig', ['sortieForm' => $sortieForm->createView()]);
     }
 
     /**
@@ -192,6 +195,67 @@ class SortieController extends AbstractController
 
         return $this->render('sortie/detail.html.twig', [
             'sortie' => $sortie
+        ]);
+    }
+
+    /**
+     * @Route("/modifier/{id}", name="modifierSortie")
+     * @param $id
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
+    public function modiferSortie($id, Request $request, EntityManagerInterface $em)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+        $user = $this->getUser();
+        $sortie = $em->getRepository(Sortie::class)->find($id);
+
+        if ($sortie->getOrganisateur() != $user || $sortie->getEtat()->getId()!=1) {
+            $this->addFlash('warning', 'Vous ne pouvez pas modifier cette sortie');
+            return $this->redirectToRoute('details', ['id'=>$id]);
+        } else {
+            $sortieModifie = new Sortie();
+            $sortieForm = $this->createForm(SortieType::class, $sortieModifie);
+
+            $sortieForm->get('nom')->setData($sortie->getNom());
+            $sortieForm->get('dateHeureDebut')->setData($sortie->getDateHeureDebut());
+            $sortieForm->get('dateLimiteInscription')->setData($sortie->getDateLimiteInscription());
+            $sortieForm->get('nbInscriptionsMax')->setData($sortie->getNbInscriptionsMax());
+            $sortieForm->get('duree')->setData($sortie->getDuree());
+            $sortieForm->get('infosSortie')->setData($sortie->getInfosSortie());
+            $sortieForm->get('lieu')->setData($sortie->getLieu());
+
+            $sortieForm->handleRequest($request);
+
+            if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+                if ($request->get('action') == 'supprimer') {
+                    $em->remove($sortie);
+                    $this->addFlash('success', 'Sortie supprimée !');
+                    return $this->redirectToRoute('sorties');
+                }
+                if ($sortie->getDateLimiteInscription() > $sortie->getDateHeureDebut()) {
+                    $this->addFlash('error', 'La date de cloture doit etre antérieur a la date de la sortie');
+                } else {
+                    $sortie->setNom($sortieModifie->getNom());
+                    $sortie->setDateHeureDebut($sortieModifie->getDateHeureDebut());
+                    $sortie->setDateLimiteInscription($sortieModifie->getDateLimiteInscription());
+                    $sortie->setNbInscriptionsMax($sortieModifie->getNbInscriptionsMax());
+                    $sortie->setDuree($sortieModifie->getDuree());
+                    $sortie->setInfosSortie($sortieModifie->getInfosSortie());
+                    $sortie->setLieu($sortieModifie->getLieu());
+                    if ($request->get('action') == 'publier') {
+                        $sortie->setEtat($this->getDoctrine()->getRepository(Etat::class)->find(2));
+                        $this->addFlash('success', 'Sortie Publiée !');
+                    }
+                    $em->flush();
+                    $this->addFlash('success', 'Sortie modifiée !');
+                }
+            }
+        }
+
+        return $this->render('sortie/modifier_sortie.html.twig', [
+            'sortieForm'=>$sortieForm->createView()
         ]);
     }
 }
