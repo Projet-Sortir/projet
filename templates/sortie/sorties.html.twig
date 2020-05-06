@@ -55,9 +55,9 @@ Sorties
                     <td>{{ sortie.inscrits|length }} / {{ sortie.nbInscriptionsMax }}</td>
                     <td>{% if sortie.etat %}{{ sortie.etat.libelle }}{% else %}'non renseigné'{% endif %}</td>
                     <td>{% if isInscrit[sortie.id] %}X{% endif %}</td>
-                    <td>{{ sortie.organisateur.pseudo }}</td>
+                    <td><a href="{{ path('profil', {'id':sortie.organisateur.id}) }}">{{ sortie.organisateur.pseudo }}</a></td>
                     <td>
-                        {% if sortie.etat.id != 1 %}<a href="{#TODO#}">Afficher</a>{% endif %}
+                        {% if sortie.etat.id != 1 %}<a href="{{ path('details', {'id':sortie.id}) }}">Afficher</a>{% endif %}
                         {% if sortie.etat.id != 4 and sortie.etat.id != 5 and isInscrit[sortie.id] %}<a href="?action=desister&id={{ sortie.id }}">Se désister</a>{% endif %}
                         {% if sortie.etat.id == 2 and not isInscrit[sortie.id] %}<a href="?action=inscrire&id={{ sortie.id }}">S'inscrire</a>{% endif %}
                         {% if sortie.etat.id == 1 %}
@@ -70,4 +70,5 @@ Sorties
             {% endfor %}
         </tbody>
     </table>
+    <button><a href="{{ path('ajouter_sortie') }}">Créer une sortie</a></button>
 {% endblock %}

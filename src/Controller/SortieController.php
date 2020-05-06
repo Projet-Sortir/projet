@@ -6,6 +6,7 @@ use App\Entity\Etat;
 use App\Entity\Site;
 use App\Entity\Sortie;
 use App\Form\SortieType;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +23,8 @@ class SortieController extends AbstractController
      */
     public function sorties(Request $request, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         $id = $this->getUser()->getId();
         $idSortie=$request->query->get( 'id');
 
@@ -91,7 +94,7 @@ class SortieController extends AbstractController
                 $sortie = $em->getRepository('App:Sortie')->find($idSortie);
                 if ($sortie->getEtat()->getId()!=1 || $sortie->getOrganisateur()!=$this->getUser()) {
                     $this->addFlash('warning', 'Vous ne pouvez pas publier cette sortie');
-                } else if ($sortie->getDateLimiteInscription() > $sortie->getDateHeureDebut() || new \DateTime()> $sortie->getDateLimiteInscription()) {
+                } else if ($sortie->getDateLimiteInscription() > $sortie->getDateHeureDebut() || new DateTime()> $sortie->getDateLimiteInscription()) {
                     $this->addFlash('warning', 'Les dates sont invalides');
                     //TODO : redirect to modifier sortie
                 } else {
@@ -175,5 +178,20 @@ class SortieController extends AbstractController
         }
 
         return $this->render('sortie/ajouter_sortie.html.twig', ['sortieForm' => $sortieForm->createView(), 'error' => $error]);
+    }
+
+    /**
+     * @Route("/details/{id}", name="details")
+     * @param $id
+     * @return Response
+     */
+    public function detail($id)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+        $sortie = $this->getDoctrine()->getRepository(Sortie::class)->find($id);
+
+        return $this->render('sortie/detail.html.twig', [
+            'sortie' => $sortie
+        ]);
     }
 }

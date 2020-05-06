@@ -22,6 +22,8 @@ class ParticipantsController extends AbstractController
      */
     public function gererProfil(Request $request, UserPasswordEncoderInterface $encoder, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         $user = $this->getUser();
         $participant = new Participant();
 
@@ -66,6 +68,21 @@ class ParticipantsController extends AbstractController
 
         return $this->render('participants/gerer_profil.html.twig', [
             'profilForm'=>$profilForm->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/profil/{id}", name="profil")
+     * @param $id
+     * @return Response
+     */
+    public function profil($id)
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+        $participant = $this->getDoctrine()->getRepository(Participant::class)->find($id);
+
+        return $this->render('participants/profil.html.twig', [
+            'participant'=>$participant
         ]);
     }
 }

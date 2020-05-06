@@ -16,6 +16,7 @@
                 <li><a href="{{ path('accueil') }}">Accueil</a></li>
                 {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                 <li><a href="{{ path('gerer_profil') }}">Mon profil</a></li>
+                <li><a href="{{ path('sorties') }}">Liste des sorties</a></li>
                 <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
                 {% else %}
                 <li><a href="{{ path('app_login') }}">Se connecter</a></li>

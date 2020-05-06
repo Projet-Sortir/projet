@@ -1,0 +1,36 @@
+{% extends 'layout.html.twig' %}
+{% block title %}
+    {{ sortie.nom }}
+{% endblock %}
+{% block main %}
+    <h1>Détails</h1>
+    <span>Nom de la sortie : {{ sortie.nom }}</span><br/>
+    <span>Date et heure de la sortie : {{ sortie.dateHeureDebut|date("d/m/Y - H:i:s") }}</span><br/>
+    <span>Date limite d'inscription : {{ sortie.dateLimiteInscription|date("d/m/Y") }}</span><br/>
+    <span>Nombre de places : {{ sortie.nbInscriptionsMax }}</span><br/>
+    <span>Durée : {{ sortie.duree|date("H") }} h {{ sortie.duree|date("i") }}</span><br/>
+    <p> Description et infos : {{ sortie.infosSortie }}</p><br/>
+    <span>Lieu : {{ sortie.lieu.nom }}</span><br/>
+    <span>Rue : {{ sortie.lieu.rue }}</span><br/>
+    <span>Ville : {{ sortie.lieu.ville.nom }}</span><br/>
+    <span>Code Postal : {{ sortie.lieu.ville.codePostal }}</span><br/>
+    <span>Latitude : {{ sortie.lieu.latitude }}</span><br/>
+    <span>Longitude : {{ sortie.lieu.longitude }}</span><br/>
+    <table>
+        <thead>
+            <tr>
+                <th>Pseudo</th>
+                <th>Nom</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for participant in sortie.inscrits %}
+                <tr>
+                    <td><a href="{{ path('profil', {'id': participant.id}) }}">{{ participant.pseudo }}</a></td>
+                    <td>{{ participant.prenom }} {{ participant.nom }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button><a href="{{ app.request.headers.get('referer') }}">Retour</a></button>
+{% endblock %}
