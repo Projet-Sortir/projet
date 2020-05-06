@@ -67,13 +67,13 @@ class SortieController extends AbstractController
 
                 if ($inscrits->contains($participant))
                 {
-                 $inscrits->remove($participant);
-                 $sortie->setInscrits($inscrits);
-                 $em->flush();
-                 $this->addFlash('success', 'Vous êtes retiré de la sortie');
-                 break;
+                    $inscrits->removeElement($participant);
+                    $sortie->setInscrits($inscrits);
+                    $em->flush();
+                    $this->addFlash('success', 'Vous êtes retiré de la sortie');
+                    break;
 
-                 //Sinon ne rien faire et envoyer un message flash warning
+                    //Sinon ne rien faire et envoyer un message flash warning
 
                 } else
                     {
@@ -87,7 +87,7 @@ class SortieController extends AbstractController
                     $this->addFlash('warning', 'Vous ne pouvez pas publier cette sortie');
                 } else if ($sortie->getDateLimiteInscription() > $sortie->getDateHeureDebut() || new \DateTime()> $sortie->getDateLimiteInscription()) {
                     $this->addFlash('warning', 'Les dates sont invalides');
-                    //TODO : redirect to modifier sortie
+                    return $this->redirectToRoute('modifierSortie', ['id'=>$idSortie]);
                 } else {
                     $sortie->setEtat($publie);
                     $em->flush();
@@ -167,7 +167,7 @@ class SortieController extends AbstractController
                 $em->persist($sortie);
                 $em->flush();
 
-                return $this->redirectToRoute('accueil');
+                return $this->redirectToRoute('sorties');
             }
         }
 
@@ -183,7 +183,7 @@ class SortieController extends AbstractController
     public function annulerSortie(Request $request, EntityManagerInterface $em, $id)
     {
         $sortie=$em -> getRepository(Sortie::class)->find($id);
-        if ($sortie->getEtat()->getId()==1 || $sortie->getEtat()->getId()==2 || $sortie->getEtat()->getId()==3)
+        if ($sortie->getEtat()->getId()==2 || $sortie->getEtat()->getId()==3)
         {
             if($sortie->getOrganisateur()== $this->getUser())
             {
@@ -198,6 +198,7 @@ class SortieController extends AbstractController
                         $sortie->setInfosSortie($motif->getInfosSortie());
                         $em->flush();
                         $this->addFlash('success', 'Sortie annulée !');
+                        return $this->redirectToRoute("sorties");
                     }
             } else {
                 $this->addFlash('warning', 'Impossible d\'annuler cette sortie');
@@ -244,6 +245,7 @@ class SortieController extends AbstractController
             if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
                 if ($request->get('action') == 'supprimer') {
                     $em->remove($sortie);
+                    $em->flush();
                     $this->addFlash('success', 'Sortie supprimée !');
                     return $this->redirectToRoute('sorties');
                 }
@@ -263,6 +265,7 @@ class SortieController extends AbstractController
                     }
                     $em->flush();
                     $this->addFlash('success', 'Sortie modifiée !');
+                    return $this->redirectToRoute('sorties');
                 }
             }
         }

@@ -8,8 +8,8 @@
     {{ form_start(sortieForm) }}
     {{ form_widget(sortieForm) }}
     <button type="submit">Enregistrer</button>
-    <button type="submit">Publier</button>
-    <button type="submit">Supprimer</button>
+    <button type="submit" name="action" value="publier">Publier</button>
+    <button type="submit" name="action" value="supprimer">Supprimer</button>
     <button type="reset">Annuler</button>
     {{ form_end(sortieForm) }}
 {% endblock %}

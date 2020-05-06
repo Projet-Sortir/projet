@@ -7,7 +7,7 @@
 {% block main %}
 
         <p> Nom de la sortie: {{ sortie.nom }}</p>
-        <p> Date de la sortie: {{ sortie.dateHeureDebut }}</p>
+        <p> Date de la sortie: {{ sortie.dateHeureDebut|date("d/m/Y - H:i") }}</p>
         <p> Site organisateur: {{ sortie.site.nom }}</p>
         <p> Lieu: {{ sortie.lieu.nom }}</p>
 
