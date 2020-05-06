@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Etat;
 use App\Entity\Site;
 use App\Entity\Sortie;
+use App\Form\AnnulerType;
 use App\Form\SortieType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -162,5 +163,42 @@ class SortieController extends AbstractController
         }
 
         return $this->render('sortie/ajouter_sortie.html.twig', ['sortieForm' => $sortieForm->createView(), 'error' => $error]);
+    }
+
+    /**
+     * @Route("/annuler_sortie/{id}", name="annuler_sortie")
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
+    public function annulerSortie(Request $request, EntityManagerInterface $em, $id)
+    {
+        $sortie=$em -> getRepository(Sortie::class)->find($id);
+        if ($sortie->getEtat()->getId()==1 || $sortie->getEtat()->getId()==2 || $sortie->getEtat()->getId()==3)
+        {
+            if($sortie->getOrganisateur()== $this->getUser())
+            {
+                $motif=new Sortie();
+                $annulerForm = $this->CreateForm(AnnulerType::class, $motif);
+                $annulerForm->handleRequest($request);
+
+                if ($annulerForm->isSubmitted() && $annulerForm->isValid())
+                    {
+                        $etatRepo = $this->getDoctrine()->getRepository(Etat::class);
+                        $sortie->setEtat($etatRepo->find(6));
+                        $sortie->setInfosSortie($motif->getInfosSortie());
+                        $em->flush();
+                        $this->addFlash('success', 'Sortie annulée !');
+                    }
+            } else {
+                $this->addFlash('warning', 'Impossible d\'annuler cette sortie');
+                return $this->redirectToRoute("sorties");
+            }
+        } else {
+            $this->addFlash('warning', 'Impossible d\'annuler cette sortie');
+            return $this->redirectToRoute("sorties");
+        }
+        return $this->render('sortie/annuler_sortie.html.twig', ['sortie'=>$sortie, 'annulerForm'=>$annulerForm->createView()]);
+
     }
 }

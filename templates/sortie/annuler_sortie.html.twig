@@ -1,0 +1,26 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}
+    Annuler une sortie
+{% endblock %}
+
+{% block main %}
+
+        <p> Nom de la sortie: {{ sortie.nom }}</p>
+        <p> Date de la sortie: {{ sortie.dateHeureDebut }}</p>
+        <p> Site organisateur: {{ sortie.site.nom }}</p>
+        <p> Lieu: {{ sortie.lieu.nom }}</p>
+
+
+        {{ form_start(annulerForm) }}
+        {{ form_widget(annulerForm) }}
+
+        <p>
+            <input type="submit" name="Enregistrer" value="Enregistrer"/>
+            &nbsp;
+            <input type="reset" name="Annuler" value="Annuler"/>
+        </p>
+
+        {{ form_end(annulerForm) }}
+
+{% endblock %}
