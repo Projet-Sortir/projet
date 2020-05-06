@@ -85,7 +85,7 @@ class SortieController extends AbstractController
                 $sortie = $em->getRepository('App:Sortie')->find($idSortie);
                 if ($sortie->getEtat()->getId()!=1 || $sortie->getOrganisateur()!=$this->getUser()) {
                     $this->addFlash('warning', 'Vous ne pouvez pas publier cette sortie');
-                } else if ($sortie->getDateLimiteInscription() > $sortie->getDateHeureDebut() || new \DateTime()> $sortie->getDateLimiteInscription()) {
+                } else if ($sortie->getDateLimiteInscription() > $sortie->getDateHeureDebut() || new DateTime()> $sortie->getDateLimiteInscription()) {
                     $this->addFlash('warning', 'Les dates sont invalides');
                     return $this->redirectToRoute('modifierSortie', ['id'=>$idSortie]);
                 } else {
