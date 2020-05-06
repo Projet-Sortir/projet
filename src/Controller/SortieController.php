@@ -5,8 +5,8 @@ namespace App\Controller;
 use App\Entity\Etat;
 use App\Entity\Site;
 use App\Entity\Sortie;
+use App\Form\AnnulerType;
 use App\Form\SortieType;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,8 +23,6 @@ class SortieController extends AbstractController
      */
     public function sorties(Request $request, EntityManagerInterface $em)
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
-
         $id = $this->getUser()->getId();
         $idSortie=$request->query->get( 'id');
 
@@ -54,6 +52,7 @@ class SortieController extends AbstractController
                     break;
                 }
             case 'desister':
+                //TODO : Annuler la présence d'un participant à une sortie
                 //$this->getDoctrine()->getRepository(Sortie::class)->deleteParticipant($idSortie, $id);
 
                 // Récupérer la sortie par son id
@@ -68,14 +67,9 @@ class SortieController extends AbstractController
                 // Si le tableau d'inscrit contient le participant, lancer la fonction de suppression du participant, mettre le nouveau tableau dans la sortie,
                 // flush,  envoyer un message flash success
 
-                if ($sortie->getEtat()->getId()!=2 && $sortie->getEtat()->getId()!=3) {
-                    $this->addFlash('warning', 'La sortie n\'est pas ouverte, vous ne pouvez pas vous désinscrire');
-                    break;
-                }
-
                 if ($inscrits->contains($participant))
                 {
-                 $inscrits->removeElement($participant);
+                 $inscrits->del($participant);
                  $sortie->setInscrits($inscrits);
                  $em->flush();
                  $this->addFlash('success', 'Vous êtes retiré de la sortie');
@@ -88,20 +82,11 @@ class SortieController extends AbstractController
                     $this->addFlash('warning', 'Vous devez être inscrit sur cette sortie pour pour pouvoir en sortir!');
                     }
                 break;
-
             case 'publier':
-                $publie = $em->getRepository('App:Etat')->find(2);
-                $sortie = $em->getRepository('App:Sortie')->find($idSortie);
-                if ($sortie->getEtat()->getId()!=1 || $sortie->getOrganisateur()!=$this->getUser()) {
-                    $this->addFlash('warning', 'Vous ne pouvez pas publier cette sortie');
-                } else if ($sortie->getDateLimiteInscription() > $sortie->getDateHeureDebut() || new DateTime()> $sortie->getDateLimiteInscription()) {
-                    $this->addFlash('warning', 'Les dates sont invalides');
-                    //TODO : redirect to modifier sortie
-                } else {
-                    $sortie->setEtat($publie);
-                    $em->flush();
-                    $this->addFlash('success', 'Sortie publiée !');
-                }
+                //TODO : publier une sortie
+                break;
+            case 'annuler':
+                //TODO : annuler une sortie
                 break;
             default:break;
         }
@@ -184,18 +169,40 @@ class SortieController extends AbstractController
     }
 
     /**
-     * @Route("/details/{id}", name="details")
-     * @param $id
+     * @Route("/annuler_sortie/{id}", name="annuler_sortie")
+     * @param Request $request
+     * @param EntityManagerInterface $em
      * @return Response
      */
-    public function detail($id)
+    public function annulerSortie(Request $request, EntityManagerInterface $em, $id)
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
-        $sortie = $this->getDoctrine()->getRepository(Sortie::class)->find($id);
+        $sortie=$em -> getRepository(Sortie::class)->find($id);
+        if ($sortie->getEtat()->getId()==1 || $sortie->getEtat()->getId()==2 || $sortie->getEtat()->getId()==3)
+        {
+            if($sortie->getOrganisateur()== $this->getUser())
+            {
+                $motif=new Sortie();
+                $annulerForm = $this->CreateForm(AnnulerType::class, $motif);
+                $annulerForm->handleRequest($request);
 
-        return $this->render('sortie/detail.html.twig', [
-            'sortie' => $sortie
-        ]);
+                if ($annulerForm->isSubmitted() && $annulerForm->isValid())
+                    {
+                        $etatRepo = $this->getDoctrine()->getRepository(Etat::class);
+                        $sortie->setEtat($etatRepo->find(6));
+                        $sortie->setInfosSortie($motif->getInfosSortie());
+                        $em->flush();
+                        $this->addFlash('success', 'Sortie annulée !');
+                    }
+            } else {
+                $this->addFlash('warning', 'Impossible d\'annuler cette sortie');
+                return $this->redirectToRoute("sorties");
+            }
+        } else {
+            $this->addFlash('warning', 'Impossible d\'annuler cette sortie');
+            return $this->redirectToRoute("sorties");
+        }
+        return $this->render('sortie/annuler_sortie.html.twig', ['sortie'=>$sortie, 'annulerForm'=>$annulerForm->createView()]);
+
     }
 
     /**
