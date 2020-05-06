@@ -1,0 +1,13 @@
+{% extends 'layout.html.twig' %}
+{% block title %}
+    {{ participant.pseudo }}
+{% endblock %}
+{% block main %}
+    <h1>{{ participant.pseudo }}</h1>
+    <span>Prénom : {{ participant.prenom }}</span><br/>
+    <span>Nom : {{ participant.nom }}</span><br/>
+    <span>Téléphone : {{ participant.telephone }}</span><br/>
+    <span>Email : {{ participant.mail }}</span><br/>
+    <span>Site de rattachement : {{ participant.site.nom }}</span><br/>
+    <button><a href="{{ app.request.headers.get('referer') }}">Retour</a></button>
+{% endblock %}
