@@ -86,8 +86,8 @@ class SortieRepository extends ServiceEntityRepository
         }
 
         if ($filtres['passes'] == 'passes') {
-            $where[] = 's.dateHeureDebut < :date';
-            $param['date'] = new DateTime();
+            $where[] = 's.etat = :idEtat';
+            $param['idEtat'] = 5;
         }
 
         if (count($where) != 0) {

@@ -24,6 +24,8 @@ class SortieController extends AbstractController
      */
     public function sorties(Request $request, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         $id = $this->getUser()->getId();
         $idSortie=$request->query->get( 'id');
 
@@ -35,7 +37,7 @@ class SortieController extends AbstractController
                 $participant = $em->getRepository('App:Participant')->find($id);
                 //récuperer le tableau des inscrits à la sortie
                 $inscrits = $sortie->getInscrits();
-                //si le tableau d'inscrit contient le participant, ne rien faire et envoyer un message flash warning
+
                 if ($sortie->getEtat()->getId()!=2) {
                     $this->addFlash('warning', 'La sortie n\'est pas ouverte, vous ne pouvez pas vous inscrire');
                     break;
@@ -44,10 +46,12 @@ class SortieController extends AbstractController
                     $this->addFlash('warning', 'Vous etes déjà inscrit pour cette sortie');
                     break;
 
-                //sinon ajouter le participant au tableau, mettre le nouveau tableau dans la sortie, flush, envoyer un message flash success
                 } else {
                     $inscrits->add($participant);
                     $sortie->setInscrits($inscrits);
+                    if ($inscrits->count() >= $sortie->getNbInscriptionsMax()) {
+                        $sortie->setEtat($this->getDoctrine()->getRepository(Etat::class)->find(3));
+                    }
                     $em->flush();
                     $this->addFlash('success', 'Inscription réussi !');
                     break;
@@ -65,21 +69,29 @@ class SortieController extends AbstractController
                 // Si le tableau d'inscrit contient le participant, lancer la fonction de suppression du participant, mettre le nouveau tableau dans la sortie,
                 // flush,  envoyer un message flash success
 
+                if ($sortie->getEtat()->getId() != 2 && $sortie->getEtat()->getId() != 3) {
+                    $this->addFlash('warning', 'Vous ne pouvez pas vous désinscrire');
+                    break;
+                }
+
                 if ($inscrits->contains($participant))
                 {
                     $inscrits->removeElement($participant);
                     $sortie->setInscrits($inscrits);
+                    if ($inscrits->count() < $sortie->getNbInscriptionsMax() && $sortie->getDateLimiteInscription() > new DateTime()) {
+                        $sortie->setEtat($this->getDoctrine()->getRepository(Etat::class)->find(2));
+                    }
                     $em->flush();
                     $this->addFlash('success', 'Vous êtes retiré de la sortie');
                     break;
 
                     //Sinon ne rien faire et envoyer un message flash warning
 
-                } else
-                    {
+                } else {
                     $this->addFlash('warning', 'Vous devez être inscrit sur cette sortie pour pour pouvoir en sortir!');
-                    }
+                }
                 break;
+
             case 'publier':
                 $publie = $em->getRepository('App:Etat')->find(2);
                 $sortie = $em->getRepository('App:Sortie')->find($idSortie);
@@ -138,6 +150,8 @@ class SortieController extends AbstractController
      */
     public function ajouterSortie(Request $request, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         $sortie = new Sortie();
         $sortieForm = $this->createForm(SortieType::class, $sortie);
 
@@ -182,6 +196,8 @@ class SortieController extends AbstractController
      */
     public function annulerSortie(Request $request, EntityManagerInterface $em, $id)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         $sortie=$em -> getRepository(Sortie::class)->find($id);
         if ($sortie->getEtat()->getId()==2 || $sortie->getEtat()->getId()==3)
         {
@@ -222,6 +238,7 @@ class SortieController extends AbstractController
     public function modiferSortie($id, Request $request, EntityManagerInterface $em)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
         $user = $this->getUser();
         $sortie = $em->getRepository(Sortie::class)->find($id);
 
